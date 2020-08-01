@@ -1,0 +1,300 @@
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Table List]
+select table_name from tabs;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Create Table]
+
+Create Table Homework_S(
+S#         Char(5),
+SNAME      Char(20),
+STATUS     Numeric(15),
+SCITY       Char(15),
+Primary Key(S#));
+
+Create Table Homework_P(
+P#         Char(6),
+PNAME      Char(20),
+PCOlOR      Char(6),
+PWEIGHT      numeric(5,1),
+PCITY       Char(15),
+Primary Key(P#));
+
+Create Table Homework_SP(
+S#         Char(5),
+P#         Char(6),
+QTY        Numeric(9),
+Primary Key(S#, P#),
+Foreign Key(S#) References Homework_S,
+Foreign Key(P#) References Homework_P);
+
+Create Table Homework_J(
+J#         Char(5),
+JNAME      Char(20),
+JCITY       Char(15),
+Primary Key(J#));
+
+Create Table Homework_SPJ(
+S#         Char(5),
+P#         Char(6),
+J#         Char(5),
+QTY        Numeric(9),
+Primary Key(S#, P#, J#),
+Foreign Key(S#) References Homework_S,
+Foreign Key(P#) References Homework_P,
+Foreign Key(J#) References Homework_J);
+
+Create Table Homework_Dept(
+DEPT#      Char(5),
+DNAME      Char(20),
+BUDGET      Char(6),
+Primary key(DEPT#));
+
+Create Table Homework_Emp#(
+EMP#        Char(5),
+ENAME      Char(20),
+DEPT#       Char(5),
+SALARY      Char(5),
+Primary key(EMP#),
+Foreign Key(DEPT#) References Homework_Dept);
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data S]
+
+Insert Into Homework_S
+Values('S1', '홍길동', 20, '서울');
+
+Insert Into Homework_S
+Values('S2', '손오공', 10, '부산');
+
+Insert Into Homework_S
+Values('S3', '박문수', 30, '부산');
+
+Insert Into Homework_S
+Values('S4', '신수동', 20, '서울');
+
+Insert Into Homework_S
+Values('S5', '방월동', 30, '경주');
+
+Select * From Homework_S;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data P]
+
+Insert Into Homework_P
+Values('P1', '너트', '빨강', 12, '서울');
+
+Insert Into Homework_P
+Values('P2', '볼트', '초록', 17, '부산');
+
+Insert Into Homework_P
+Values('P3', '스크류', '파랑', 17, '광주');
+
+Insert Into Homework_P
+Values('P4', '스크류', '빨강', 14, '서울');
+
+Insert Into Homework_P
+Values('P5', '캠', '파랑', 12, '부산');
+
+Insert Into Homework_P
+Values('P6', '콕', '빨강', 19, '서울');
+
+Select * From Homework_P;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data SP]
+
+Insert Into Homework_SP
+Values('S1', 'P1', 300);
+
+Insert Into Homework_SP
+Values('S1', 'P2', 200);
+
+Insert Into Homework_SP
+Values('S1', 'P3', 400);
+
+Insert Into Homework_SP
+Values('S1', 'P4', 200);
+
+Insert Into Homework_SP
+Values('S1', 'P5', 100);
+
+Insert Into Homework_SP
+Values('S1', 'P6', 100);
+
+Insert Into Homework_SP
+Values('S2', 'P1', 300);
+
+Insert Into Homework_SP
+Values('S2', 'P2', 400);
+ 
+Insert Into Homework_SP
+Values('S3', 'P2', 200);
+
+Insert Into Homework_SP
+Values('S4', 'P2', 200);
+
+Insert Into Homework_SP
+Values('S4', 'P4', 300);
+
+Insert Into Homework_SP
+Values('S4', 'P5', 400);
+
+Select * From Homework_SP;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data J]
+
+Insert Into Homework_J
+Values('J1', '정렬기', '부산');
+
+Insert Into Homework_J
+Values('J2', '천공기', '광주');
+
+Insert Into Homework_J
+Values('J3', '판독기', '경주');
+
+Insert Into Homework_J
+Values('J4', '콘솔', '경주');
+
+Insert Into Homework_J
+Values('J5', '인쇄기', '서울');
+
+Insert Into Homework_J
+Values('J6', '터미널', '인천');
+
+Insert Into Homework_J
+Values('J7', '테이블', '서울');
+
+Select * From Homework_J;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data SPJ]
+
+Insert Into Homework_SPJ
+Values('S3', 'P3', 'J3', 300);
+
+Insert Into Homework_SPJ
+Values('S1', 'P1', 'J1', 200);
+
+Insert Into Homework_SPJ
+Values('S1', 'P1', 'J4', 700);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J1', 400);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J2', 200);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J3', 200);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J4', 500);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J5', 600);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J6', 400);
+
+Insert Into Homework_SPJ
+Values('S2', 'P3', 'J7', 800);
+
+Insert Into Homework_SPJ
+Values('S2', 'P5', 'J2', 100);
+
+Insert Into Homework_SPJ
+Values('S3', 'P3', 'J1', 200);
+
+Insert Into Homework_SPJ
+Values('S3', 'P4', 'J2', 500);
+
+Insert Into Homework_SPJ
+Values('S4', 'P6', 'J3', 300);
+
+Insert Into Homework_SPJ
+Values('S4', 'P6', 'J7', 300);
+
+Insert Into Homework_SPJ
+Values('S5', 'P2', 'J2', 200);
+
+Insert Into Homework_SPJ
+Values('S5', 'P2', 'J4', 100);
+
+Insert Into Homework_SPJ
+Values('S5', 'P5', 'J5', 500);
+
+Insert Into Homework_SPJ
+Values('S5', 'P5', 'J7', 100);
+
+Insert Into Homework_SPJ
+Values('S5', 'P6', 'J2', 200);
+
+Insert Into Homework_SPJ
+Values('S5', 'P1', 'J4', 100);
+
+Insert Into Homework_SPJ
+Values('S5', 'P3', 'J4', 200);
+
+Insert Into Homework_SPJ
+Values('S5', 'P4', 'J4', 800);
+
+Insert Into Homework_SPJ
+Values('S5', 'P5', 'J4', 400);
+
+Insert Into Homework_SPJ
+Values('S5', 'P6', 'J4', 500);
+
+Select * From Homework_SPJ;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data Dept]
+
+Insert Into Homework_Dept
+Values('D1', '마케팅부', '10M');
+
+Insert Into Homework_Dept
+Values('D2', '개발부', '12M');
+
+Insert Into Homework_Dept
+Values('D3', '연구부', '5M');
+
+Select * From Homework_Dept;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Insert Data Emp#]
+
+Insert Into Homework_Emp#
+Values('E1', '이몽룡', 'D1', '40K');
+
+Insert Into Homework_Emp#
+Values('E2', '장길산', 'D1', '42K');
+
+Insert Into Homework_Emp#
+Values('E3', '허참봉', 'D2', '30K');
+
+Insert Into Homework_Emp#
+Values('E4', '성춘향', 'D2', '35K');
+
+Select * From Homework_Emp#;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+[Create Tablespace, Create User]
+
+Conn Sys As Sysdba
+
+Create Tablespace Homework1
+Datafile 'C:\DB\Homework1\Homework01_data01.dbf' Size 20M;
+
+Alter Tablespace Homework1
+Add Datafile 'C:\DB\Homework1\Homework01_data02.dbf' Size 20M;
+
+Select tablespace_name From dba_data_files;
+
+Create user MH
+Identified by 1234
+Default Tablespace Homework1
+Quota Unlimited on Homework1;
+
+Grant Connect, Resource to MH;
