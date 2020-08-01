@@ -1,0 +1,841 @@
+[0. code_ INDEX]
+ 2p~ 4p 과제 01-1.  GET SQL
+ 4p~ 5p 과제 01-9. GET STARTED 
+ 5p~ 6p 과제 02-1. GET STARTED
+ 7p~19p 과제 03-1. 쿼리문 작성
+19p~20p 과제 05-2. JAVA JDBC demo_20154215
+21p~24p 과제 05-3. JAVA JDBC GUI
+
+// 과제 01-1 GET SQL 시작 //
+// TABLE SPACE를 생성하기 위해서 관리자 계정에 접속합니다.
+conn sys as sysdba
+1234
+
+// 생성한 폴더를 지정해서 TABLE SPACE를 생성하고
+Create Tablespace Homework3
+Datafile 'C:\DB\Homework3\Homework03_data01.dbf' Size 10M;
+
+// TABLESPACE가 생성된 것을 확인했습니다.
+Select tablespace_name From dba_data_files;
+
+// 해당 테이블 스페이스를 사용할 사용자 계정을 생성하고,
+Create user MHHW3
+Identified by 1234
+Default Tablespace Homework3
+Quota Unlimited on Homework3;
+
+// 생성한 사용자 계정에 권한을 부여했습니다.
+Grant Connect, Resource to MHHW3;
+
+// 사용자 계정에 접속한 후 
+CONNECT MHHW3/1234
+
+// 현재 사용자를 확인했습니다.
+SHOW USER;
+
+//DEPT 테이블을 생성하고 데이터를 삽입했습니다.
+CREATE TABLE DEPT(
+DEPTNO NUMERIC(5),
+DNAME CHAR(10),
+LOC CHAR(10),
+PRIMARY KEY(DEPTNO)
+);
+
+INSERT INTO DEPT VALUES(10, '인사부', '광천동');
+INSERT INTO DEPT VALUES(20, '영업부', '운남동');
+INSERT INTO DEPT VALUES(30, '경리부', '충장동');
+INSERT INTO DEPT VALUES(40, '생산부', '풍암동');
+INSERT INTO DEPT VALUES(50, '개발부', '수완동');
+INSERT INTO DEPT VALUES(60, '총무부', '계림동');
+INSERT INTO DEPT VALUES(70, '기술부', '두암동');
+
+//EMP 테이블을 생성하고 데이터를 삽입했습니다.
+CREATE TABLE EMP(
+EMPNO NUMERIC(5),
+ENAME CHAR(10),
+EPHONE CHAR(15),
+JOB CHAR(6),
+MGR NUMERIC(5),
+HIREDATE DATE,
+SAL NUMERIC(5),
+DEPTNO NUMERIC(5),
+PRIMARY KEY(EMPNO),
+FOREIGN KEY(DEPTNO) REFERENCES DEPT
+);
+
+INSERT INTO EMP VALUES(1001, '강세아', '010-2033-1131', '사원', 1010, '20190713', 200, 10);
+INSERT INTO EMP VALUES(1002, '강혜진', '010-3452-1132', '부장', 1020, '20051220', 500, 20);
+INSERT INTO EMP VALUES(1003, '구명회', '010-5724-1133', '대리', 1004, '20161013', 250, 20);
+INSERT INTO EMP VALUES(1004, '김영훈', '010-8568-1134', '사원', 1003, '20190511', 200, 10);
+INSERT INTO EMP VALUES(1005, '김영빈', '010-1718-1135', '과장', 1008, '20080918', 350, 70);
+INSERT INTO EMP VALUES(1006, '김향진', '010-6794-1136', '대리', 1019, '20161121', 250, 20);
+INSERT INTO EMP VALUES(1007, '박경재', '010-7534-1137', '과장', 1017, '20080103', 350, 30);
+INSERT INTO EMP VALUES(1008, '박준서', '010-5479-1138', '사원', 1005, '20190311', 200, 10);
+INSERT INTO EMP VALUES(1009, '박나은', '010-6322-1139', '사원', 1018, '20181204', 200, 20);
+INSERT INTO EMP VALUES(1010, '신나라', '010-2954-1140', '대리', 1001, '20140321', 250, 60);
+INSERT INTO EMP VALUES(1011, '송주은', '010-1907-1141', '사원', 1016, '20191027', 200, 20);
+INSERT INTO EMP VALUES(1012, '이동훈', '010-1044-1142', '사원', 1013, '20190902', 200, 30);
+INSERT INTO EMP VALUES(1013, '이지은', '010-9673-1143', '대리', 1012, '20160208', 250, 40);
+INSERT INTO EMP VALUES(1014, '이인호', '010-8724-1144', '사장', null, '20001029', 800, 20);
+INSERT INTO EMP VALUES(1015, '정밀한', '010-9951-1145', '사원', 1021, '20190106', 200, 10);
+INSERT INTO EMP VALUES(1016, '조재혁', '010-5531-1146', '과장', 1011, '20090910', 350, 60);
+INSERT INTO EMP VALUES(1017, '조건우', '010-3865-1147', '사원', 1007, '20190618', 200, 20);
+INSERT INTO EMP VALUES(1018, '지승재', '010-1211-1148', '부장', 1009, '20030116', 500, 70);
+INSERT INTO EMP VALUES(1019, '차대령', '010-4632-1149', '사원', 1006, '20190213', 200, 20);
+INSERT INTO EMP VALUES(1020, '하동기', '010-5688-1150', '사원', 1002, '20181105', 200, 10);
+INSERT INTO EMP VALUES(1021, '허재영', '010-5688-1150', '대리', 1015, '20150425', 250, 60);
+
+
+// EMP 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM EMP;
+
+// DEPT 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM DEPT;
+
+// 부서 테이블에서 부서번호와 부서이름만 출력했습니다.
+SELECT DEPTNO, DNAME FROM DEPT;
+
+// 부서 테이블에서 부서번호와 부서이름에 별명을 붙여 출력했습니다
+SELECT DEPTNO 부서번호, DNAME AS 부서명 FROM DEPT;
+
+// EMP테이블의 JOB 필드 중에서 중복된 필드를 제거하고 출력했습니다
+SELECT DISTINCT JOB FROM EMP;
+
+// EMP 테이블에서 '구명회'의 사원번호, 사원명, 급여를 출력했습니다
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE ENAME='구명회';
+
+// EMP 테이블에서 급여가 200이거나 350이거나 800인 사원들의 사원번호와 사원이름과 급여를 출력했습니다.
+SELECT EMPNO, ENAME SAL FROM EMP WHERE SAL=200 OR SAL=350 OR SAL=800;
+
+// IN 명령어를 사용해서 위의 쿼리문과 같은 결과를 출력할 수 있습니다
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL IN(200, 350, 800);
+
+// EMP 테이블에서 급여가 200이거나 350이거나 800이 아닌 사원들의 사원번호와 사원이름과 급여를 출력했습니다.
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL <> 250 AND SAL <>300 AND SAL <> 800;
+
+// IN 명령어를 사용해서 위의 쿼리문과 동일한 결과를 출력할 수 있습니다.
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL NOT IN (250,300,800);
+
+// 이름이 '김'으로 시작하거나 가운데 글자가 '나'인 사원의 사원번호와 이름을 출력했습니다
+SELECT EMPNO, ENAME FROM EMP WHERE ENAME LIKE '김%' OR ENAME LIKE '%나%';
+
+// 상관이 없는 사원의 정보를 출력했습니다
+SELECT * FROM EMP WHERE MGR IS NULL;
+
+// 사원 테이블에서 최근 입사한 직원 순으로(내림차순) 사원번호, 사원이름, 직급, 입사일을 출력했습니다
+SELECT EMPNO, ENAME, JOB, TO_CHAR(HIREDATE, 'YYYY/MM/DD') FROM EMP ORDER BY HIREDATE DESC;
+
+// 사원 테이블에서 입사한 기간이 오래된 직원 순으로(오름차순) 사원번호, 사원이름, 직급, 입사일을 출력했습니다.
+SELECT EMPNO, ENAME, JOB, TO_CHAR(HIREDATE, 'YYYY/MM/DD') FROM EMP ORDER BY HIREDATE ASC;
+
+// 사원 테이블에서 같은 부서중에서 오래된 직원 순으로 부서번호, 사원번호, 사원이름, 직급, 날짜를 출력했습니다.
+// (부서 번호를 오름차순으로출력하고, 같은 부서 내에서 사원이 입사한 날짜를 오름차순으로 출력합니다.)
+SELECT DEPTNO, EMPNO, ENAME, JOB, TO_CHAR(HIREDATE, 'YYYY/MM/DD') 
+FROM EMP 
+ORDER BY DEPTNO ASC, HIREDATE ASC;
+// 끝 //
+
+// 과제 01-09 GET STARTED 시작 //
+// 현재 계정의 모든 테이블을 출력했습니다.  
+select * from tabs;
+
+// EMP 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM EMP;
+
+// DEPT 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM DEPT;
+
+// emp테이블에서 empno 컬럼과 ename컬럼을 출력합니다.	
+select empno, ename from emp;	
+
+// emp테이블에서 empno 컬럼과 ename컬럼을 출력하되, 레코드를 내림차순으로 출력합니다.
+select empno, ename from emp order by empno desc;
+
+// 부서 테이블에서 부서번호와 부서이름만 출력했습니다.
+SELECT DEPTNO, DNAME FROM DEPT;	
+
+// 부서 테이블에서 부서번호와 부서이름에 별명을 붙여 출력했습니다.
+SELECT DEPTNO 부서번호, DNAME AS 부서명 FROM DEPT;
+
+// EMP테이블의 JOB 필드 중에서 중복된 필드를 제거하고 출력했습니다.
+SELECT DISTINCT JOB FROM EMP;
+
+// EMP 테이블에서 급여가 3000 이하인 사원번호, 사원명, 급여를 출력했습니다.
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL<=3000;
+
+// EMP 테이블에서 이름이 ‘KING’인 사원의 사번번호, 사원이름, 급여를 출력했습니다.
+select empno, ename, sal from emp where ename='KING’
+
+// EMP 테이블에서 급여가 2500이거나 3000이거나 5000인 사원들의 사원번호와 사원이름과 급여를 출력했습니다.
+SELECT EMPNO, ENAME SAL FROM EMP WHERE SAL=2500 OR SAL=3000 OR SAL=5000;
+
+// IN 명령어를 사용해서 위의 쿼리문과 같은 결과를 출력할 수 있습니다.
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL IN(2500, 3000, 5000);
+
+// EMP테이블에서 급여가 2500이거나 3000이거나 5000이 아닌 사원들의 사원번호와 사원이름과 급여를 출력했습니다.
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL <> 2500 AND SAL <>3000 AND SAL <> 5000;
+
+// IN 명령어를 사용해서 위 쿼리문과 동일한 결과를출력할 수 있습니다.
+SELECT EMPNO, ENAME, SAL FROM EMP WHERE SAL NOT IN (2500,3000,5000);
+
+// 이름이 ‘M'으로 시작하거나 가운데 글자가 ‘A'인 사원의 사원번호와 이름을 출력했습니다.
+SELECT EMPNO, ENAME FROM EMP WHERE ENAME LIKE ‘M%’ OR ENAME LIKE ‘%A%’;
+
+// 상관이 없는 사원의 정보를 출력했습니다. 
+SELECT * FROM EMP WHERE MGR IS NULL;
+
+// 사원 테이블에서 입사한 기간이 오래된 직원 순으로(내림차순) 사원번호, 사원이름, 직급, 입사일을 출력했습니다.
+SELECT EMPNO, ENAME, JOB, TO_CHAR(HIREDATE, 'YYYY/MM/DD') FROM EMP ORDER BY HIREDATE DESC;
+
+// 사원 테이블에서 같은 부서중에서 오래된 직원 순으로 부서번호, 사원번호, 사원이름, 직급, 날짜를 출력했습니다.
+// (부서 번호를 오름차순으로출력하고, 같은 부서 내에서 사원이 입사한 날짜를 오름차순으로 출력합니다.)
+SELECT DEPTNO, EMPNO, ENAME, JOB, TO_CHAR(HIREDATE, 'YYYY/MM/DD') 
+FROM EMP 
+ORDER BY DEPTNO ASC, HIREDATE ASC;
+// 끝 //
+
+// 과제 02-1 GET STARTED 시작 //
+// EMP01 테이블을 생성했습니다.
+// ENO 크기 4인 NUMBER형
+// ENAME 크기 14인 VARCHAR2형
+// SAL 고정 소수점 숫자 NUMBER형
+// SAL은 최대 7자리, 
+// 소수점에서 최하위 유효자릿수까지 자릿수가 3입니다.
+CREATE TABLE EMP01(	
+ENO NUMBER(4),
+ENAME VARCHAR2(14),
+SAL NUMBER(7, 3)
+);
+
+// 생성한 EMP01 테이블의 구조를 출력했습니다
+DESC EMP01;
+
+// EMP01 테이블에 DATE 형식의 BIRTH 컬럼을 추가했습니다.
+ALTER TABLE EMP01 ADD(BIRTH DATE);
+
+// EMP01 테이블의 ENAME 컬럼 타입을 크기 30의 VARCHAR2형으로 수정했습니다.
+ALTER TABLE EMP01 MODIFY ENAME VARCHAR2(30);
+
+// EMP01 테이블의 ENO 컬럼을 사용하지 않겠다고 마크했습니다.
+// 실제로 삭제되지는 않지만 DROP된것처럼 취급합니다.
+ALTER TABLE EMP01 SET UNUSED(ENO);
+
+// EMP01 테이블에서 마킹해둔 컬럼을 실제로 삭제했습니다.
+ALTER TABLE EMP01 DROP UNUSED COLUMNS;
+
+// EMP01테이블의 이름을 EMP02로 변경했습니다.
+RENAME EMP01 TO EMP02;
+
+// EMP02 테이블 구조를 출력했습니다 당연히 EMP01 테이블의 구조와 동일합니다.
+DESC EMP02;
+
+// 현재 사용중인 사용자가 접근할 수 있는 모든 테이블 목록을 출력합니다.
+SELECT TABLE_NAME FROM USER_TABLES;
+
+// 모든 사용자가 접근할 수 있는 모든 테이블을 출력합니다.
+SELECT OWNER, TABLE_NAME FROM ALL_TABLES;
+
+// SYS권한이 있을 때 접근할 수 있는 모든 테이블을 출력합니다.
+// 현재 DBA권한이 없으므로(SYS계정으로 접속중이 아니므로) 접근할 수 있는 테이블이 존재하지 않습니다.
+SELECT OWNER, TABLE_NAME FROM DBA_TABLES;
+// 끝 //
+
+// 과제 03-1 쿼리문 수행 시작 //
+// DEPT 테이블의 모든 레코드를 출력했습니다.
+SELECT * FROM DEPT;
+
+// DEPT 테이블에 (null, 'TEST', 'TEST')값을 삽입했습니다.
+// DEPT 첫번째 컬럼은 기본키로 NULL값을 갖지 못해 ERROR
+INSERT INTO DEPT VALUES(NULL, 'TEST', 'TEST’);
+
+// 제약조건에 관한 정보를 출력합니다.
+DESC USER_CONSTRAINTS;
+
+// 사용자의 제약조건중에서 제약조건 이름, 제약조건타입, 테이블 이름을 출력했습니다.
+// DEPT 테이블의 제약조건 PRIMARY KEY와 EMP 테이블의 제약조건 PRIMARY KEY, FOREIGN KEY이 있습니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME FROM USER_CONSTRAINTS;
+
+// EMP02 테이블의 모든 레코드를 출력했습니다. 삽입한 레코드가 없으므로 아무것도 출력되지 않습니다.
+SELECT * FROM EMP02;
+
+// EMP02 테이블에 (NULL, NULL, '사원', '2000/01/02', 20)값을 삽입했습니다.
+// EMP02 테이블이 가지는 컬럼의 수보다 많은 값으로 ERROR
+INSERT INTO EMP02 VALUES(NULL, NULL, '사원', '2000/01/02', 20);
+
+// EMP01 테이블을 삭제했습니다. EMP01 테이블은 존재하지 않으므로 ERROR
+DROP TABLE EMP01;
+
+// EMP01 테이블을 생성했습니다.
+// EMPNO  > 크기 4의 NUMBER형 사원 번호
+// ENAME  > 크기 10의 VARCHAR2형 사원 이름
+// JOB     > 크기 9의 VARCHAR2형 사원 직급
+// DEPTNO > 크기2의 NUMBER형 부서 번호
+CREATE TABLE EMP01(
+    EMPNO NUMBER(4),
+    ENAME VARCHAR2(10),
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2)
+);
+
+// EMP01테이블의 모든 레코드를 출력했습니다. 삽입한 레코드가 없으므로 아무것도 출력되지 않습니다.
+SELECT * FROM EMP01;
+
+// EMP01 테이블에 (NULL, NULL, '사원', 30)값을 삽입했습니다.
+INSERT INTO EMP01 VALUES(NULL, NULL, '사원', 30);
+
+// 사용자의 제약조건중에서 EMP01테이블의 제약조건이름, 제약조건타입, 테이블이름을 출력했습니다.
+// EMP01 테이블은 제약조건이 없으므로 선택된 레코드가 없습니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME='EMP01’;
+
+// EMP02 테이블을 삭제했습니다.
+DROP TABLE EMP02;
+
+// EMP02 테이블을 생성했습니다.
+// EMPNO NULL값을 가지지 못하는 크기 4의 NUMBER형 
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형 
+// JOB 크기 9의 VARCHAR2형
+// DEPTNO 크기 2의 NUMBER형
+CREATE TABLE EMP02(
+    EMPNO NUMBER(4) NOT NULL,
+    ENAME VARCHAR2(10) NOT NULL,
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2)
+);
+
+// EMP02 테이블에 (NULL, NULL, '사원', 30)값을 삽입했습니다.
+// EMPNO, ENAME 컬럼이 NULL값을 가지지 못하므로 ERROR
+INSERT INTO EMP02 VALUES(NULL, NULL, '사원', 30);
+
+// EMP02 테이블의 구조를 출력합니다.
+DESC EMP02;
+
+// EMP02테이블에 (1000, '허준', '사원', 30)값을 삽입했습니다.
+INSERT INTO EMP02 VALUES(1000, '허준', '사원', 30);
+
+// 지금까지의 결과를 저장합니다.
+// autocommit 옵션을 체크하면 쿼리문을 수행할때마다 COMMIT을 해주지 않아도 자동으로 결과를 저장합니다.
+COMMIT;
+
+// EMP02 테이블의 모든 레코드를 출력했습니다.
+SELECT * FROM EMP02;
+
+// EMP02 테이블에 (1000, '홍길동', '과장', 20)값을 삽입했습니다. 
+INSERT INTO EMP02 VALUES(1000, '홍길동', '과장', 20);
+
+// EMP03 테이블을 생성했습니다.
+// EMPNO UNIQUE한 값을 가지는 크기 4의 NUMBER형
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형
+// JOB 크기 9의 VARCHAR2형
+// DEPTNO 크기 2의 NUMBER형
+CREATE TABLE EMP03(
+    EMPNO NUMBER(4) UNIQUE,
+    ENAME VARCHAR2(10) NOT NULL,
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2)
+);
+
+// EMP03 테이블에 (1000, '허준', '사원', 30)값을 삽입했습니다.
+INSERT INTO EMP03 VALUES(1000, '허준', '사원', 30);
+
+// EMP03 테이블에 (1000, '홍길동', '과장', 20)값을 삽입했습니다.
+// EMPNO 컬럼은 UNIQUE한 값을 가지므로 ERROR
+INSERT INTO EMP03 VALUES(1000, '홍길동', '과장', 20);
+
+// EMP03 테이블에 (NULL, '안중근', '과장', 20)값을 삽입했습니다.
+INSERT INTO EMP03 VALUES(NULL, '안중근', '과장', 20);
+
+// EMP03 테이블에 (NULL, '이순신', '부장', 10)값을 삽입했습니다.
+INSERT INTO EMP03 VALUES(NULL, '이순신', '부장', 10);
+
+// EMP04 테이블을 생성했습니다.
+// EMPNO UNIQUE한 값을 가지는 크기 4의 NUMBER형
+// 설정한 UNIQUE 제약조건의 이름을 EMP04_EMPNO_UK로 설정
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형
+// 설정한 NOT NULL 제약조건의 이름을 EMP04_ENAME_NN으로 설정
+// JOB 크기 9의 VARCHAR2형
+// DEPTNO 크기 2의 NUMBER형
+CREATE TABLE EMP04(
+    EMPNO NUMBER(4) CONSTRAINT EMP04_EMPNO_UK UNIQUE,
+    ENAME VARCHAR2(10) CONSTRAINT EMP04_ENAME_NN NOT NULL,
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2)
+);
+
+// 사용자의 제약조건중에서 EMP04테이블의 제약조건이름, 제약조건타입, 테이블이름을 출력했습니다.
+// EMP04 테이블의 제약조건 UNIQUE과 EMP04 테이블의 제약조건 NOT NULL를 확인합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP04’);
+
+// EMP04 테이블에 (1000, '허준', '사원', 30)값을 삽입했습니다.
+INSERT INTO EMP04 VALUES(1000, '허준', '사원', 30);
+
+// EMP04 테이블에 (1000, '홍길동', '과장', 20)값을 삽입했습니다. EMPNO는 UNIQUE한 값을 가지므로 ERROR
+INSERT INTO EMP04 VALUES(1000, '홍길동', '과장', 20);
+
+// EMP05 테이블을 생성했습니다.
+// EMPNO PRIMARY KEY값을 가지는 크기 4의 NUMBER형
+// 설정한 UNIQUE 제약조건의 이름을 EMP05_EMPNO_PK로 설정
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형
+// 설정한 NOT NULL 제약조건의 이름을 EMP05_ENAME_NN으로 설정
+// JOB 크기 9의 VARCHAR2형
+// DEPTNO 크기 2의 NUMBER형
+CREATE TABLE EMP05(
+    EMPNO NUMBER(4) CONSTRAINT EMP05_EMPNO_PK PRIMARY KEY ,
+    ENAME VARCHAR2(10) CONSTRAINT EMP05_ENAME_NN NOT NULL, 
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2)
+);
+
+// EMP05 테이블에 (1000, '허준', '사원', 30)값을 삽입했습니다.
+INSERT INTO EMP05 VALUES(1000, '허준', '사원', 30);
+
+// EMP05 테이블에 (1000, '홍길동', '과장', 20)값을 삽입했습니다. 
+// EMPNO 컬럼은 PK속성이므로 UNIQUE한 값을 가지므로 ERROR
+INSERT INTO EMP05 VALUES(1000, '홍길동', '과장', 20);
+
+// EMP05 테이블에 (NULL, '이순신', '부장', 10)값을 삽입했습니다.
+// EMPNO 컬럼은 PK속성이므로 NULL값을 가질 수 없으므로 ERROR
+INSERT INTO EMP05 VALUES(NULL, '이순신', '부장', 10);
+
+// 사용자의 제약조건중에서 DEPT 테이블의 제약조건이름, 제약조건타입, 테이블이름을 출력했습니다.
+// DEPT 테이블의 제약조건 PRIMARY KEY를 확인합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('DEPT’);
+
+// 사용자의 제약조건 중에서 DEPT 테이블의 제약조건이름, 테이블이름, 속성명을 출력했습니다.
+// DEPT 테이블의 제약조건 PRIMARY KEY를 확인했습니다.
+SELECT CONSTRAINT_NAME, TABLE_NAME, COLUMN_NAME 
+FROM USER_CONS_COLUMNS 
+WHERE TABLE_NAME IN('DEPT’);
+
+// DEPT 테이블의 모든 레코드 출력했습니다.
+SELECT * FROM DEPT;
+
+// EMP 테이블의 (EMPNO, ENAME, JOB, DEPTNO)컬럼에 (1010, '홍길동', '사원', 50)값을 삽입했습니다.
+// DEPT테이블의 DEPT컬럼에 50이란 값을 가지는 레코드가 없으므로 ERROR
+INSERT INTO EMP(EMPNO, ENAME, JOB, DEPTNO) VALUES(1010, '홍길동', '사원', 50);
+
+// 사용자의 제약조건중에서 
+// EMP 테이블과 DEPT 테이블의 제약조건이름과 타입, 외래키가 참조한 기본키, 그리고 테이블이름을 출력합니다.
+// DEPT 테이블의 제약조건 PRIMARY KEY
+// EMP 테이블의 제약조건 PRIMARY KEY
+// EMP 테이블의 제약조건 NOT NULL
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('DEPT', 'EMP’);
+
+// EMP05 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM EMP05;
+
+// EMP05 테이블에서 EMPNO가 1010인 레코드를 삭제했습니다.
+DELETE EMP05 WHERE EMPNO=1010;
+
+// EMP05 테이블에 (1010, '홍길동', '사원', 50)값을 삽입했습니다.
+INSERT INTO EMP05 VALUES(1010, '홍길동', '사원', 50);
+
+// 지금까지의 결과를 저장합니다.
+// autocommit 옵션을 체크하면 쿼리문을 수행할때마다 COMMIT을 해주지 않아도 자동으로 결과를 저장합니다.
+COMMIT;
+
+// EMP06 테이블을 생성했습니다.
+// EMPNO PRIMARY KEY값을 가지는 크기 4의 NUMBER형
+// 설정한 PRIMARY KEY 제약조건의 이름을 EMP06_EMPNO_PK로 설정
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형
+// 설정한 NOT NULL 제약조건의 이름을 EMP06_ENAME_NN으로 설정
+// JOB 크기 9의 VARCHAR2형
+// DEPTNO FOREIGN KEY값을 가지는 크기 2의 NUMBER형
+// 설정한 FOREIGN KEY값을 가지는 제약조건의 이름을 EMP06_DEPTNO_FK로 설정
+CREATE TABLE EMP06(
+    EMPNO NUMBER(4) CONSTRAINT EMP06_EMPNO_PK PRIMARY KEY ,
+    ENAME VARCHAR2(10) CONSTRAINT EMP06_ENAME_NN NOT NULL, 
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2) CONSTRAINT EMP06_DEPTNO_FK REFERENCES DEPT(DEPTNO)
+);
+
+// EMP06 테이블에 (1010, '홍길동', '사원', 50)값을 삽입했습니다.
+// 외래키인 DEPT 테이블의 DEPTNO 컬럼의 레코드에 존재하는 값이 아니라 ERROR
+INSERT INTO EMP06 VALUES(1010, '홍길동', '사원', 50);
+
+// EMP06 테이블에 (1010, '홍길동', '사원', 30)값을 삽입했습니다.
+INSERT INTO EMP06 VALUES(1010, '홍길동', '사원', 30);
+
+// 사용자의 제약조건중에서 
+// EMP06 테이블의 제약조건이름과 타입, 외래키가 참조한 기본키, 그리고 테이블이름을 출력합니다.
+// EMP06 테이블의 제약조건 PRIMARY KEY
+// EMP06 테이블의 제약조건 NOT NULL
+// EMP06 테이블의 제약조건 FOREIGN KEY
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP06’);
+
+// EMP07 테이블을 생성합니다.
+// EMPNO PRIMARY KEY값을 가지는 크기 4의 NUMBER형
+// 설정한 PRIMARY KEY 제약조건의 이름을 EMP07_EMPNO_PK로 설정
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형
+// 설정한 NOT NULL 제약조건의 이름을 EMP07_ENAME_NN으로 설정
+// SAL 고정 소수점 숫자 NUMBER형
+// 최대 7자리이며, 소수점에서 최하위 유효자릿수까지의 자릿수가 2입니다
+// SAL컬럼은 500부터 5000사이의 값만 삽입할 수 있다.
+// 설정한 CHECK 제약조건의 이름을 EMP07_SAL_CK로 설정
+// GENDER 크기 1의 VARCHAR2형
+// GENDER컬럼은 M, F인 값만 삽입할 수 있다.
+// 설정한 CHECK 제약조건의 이름을 EMP07_GENDER_CK로 설정
+CREATE TABLE EMP07(
+    EMPNO NUMBER(4) CONSTRAINT EMP07_EMPNO_PK PRIMARY KEY ,
+    ENAME VARCHAR2(10) CONSTRAINT EMP07_ENAME_NN NOT NULL, 
+    SAL NUMBER(7, 2) CONSTRAINT EMP07_SAL_CK CHECK(SAL BETWEEN 500 AND 5000),
+    GENDER VARCHAR2(1) CONSTRAINT EMP07_GENDER_CK CHECK(GENDER IN('M', 'F'))
+);
+
+// EMP07 테이블에 (1000, '허준', 200, 'M') 값을 삽입합니다. SAL컬럼은 500 ~ 5000 값만 가지므로 ERROR
+INSERT INTO EMP07 VALUES(1000, '허준', 200, 'M’);
+
+// EMP07 테이블에 (1000, '허준', 600, 'A')값을 삽입했습니다. GENDER 컬럼은 M과 F값만 가지므로 ERROR
+INSERT INTO EMP07 VALUES(1000, '허준', 600, 'A’);
+
+// DEPT01 테이블의 모든 레코드를 출력했습니다. DEPT01 테이블이 생성되어 있지 않기 때문에 ERROR
+SELECT * FROM DEPT01;
+
+// DEPT01 테이블을 제거했습니다. DEPT01 테이블이 생성되어 있지 않기 때문에 ERROR
+DROP TABLE DEPT01;
+
+// DEPT01 테이블 생성합니다.
+// DEPTNO PRIMARY KEY 값을 가지는 크기 2의 NUMBER형
+// DNAME 크기 14의 VARCHAR2형
+// LOC DEFAULT값으로 ‘서울＇을 가지는 크기 13의 VARCHAR2형
+CREATE TABLE DEPT01(
+    DEPTNO NUMBER(2) PRIMARY KEY,
+    DNAME VARCHAR2(14),
+    LOC VARCHAR2(13) DEFAULT '서울’
+);
+
+// DEPT01 테이블의 DEPTNO, DNAME 컬럼에 (10, '경리부')값을 삽입했습니다.
+INSERT INTO DEPT01(DEPTNO, DNAME) VALUES(10, '경리부’);
+
+// EMP01 테이블을 삭제했습니다.
+DROP TABLE EMP01;
+
+// EMP01 테이블을 생성했습니다.
+// EMPNO PRIMARY KEY 값을 갖는 크기 4의 NUMBER형
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형
+// JOB UNIQUE 값을 갖는 크기 9의 VARCHAR2형
+// DEPTNO FOREIGN KEY 값을 가지는 크기2의 NUMBER형
+CREATE TABLE EMP01(
+    EMPNO NUMBER(4) PRIMARY KEY,
+    ENAME VARCHAR2(10) NOT NULL, 
+    JOB VARCHAR2(9) UNIQUE,
+    DEPTNO NUMBER(2) REFERENCES DEPT(DEPTNO)
+);
+
+// EMP02 테이블을 제거했습니다.
+DROP TABLE EMP02;
+
+// EMP02 테이블을 생성했습니다.
+// EMPNO PRIMARY KEY값을 갖는 크기 4의 NUMBER형 
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형 
+// JOB UNIQUE 값을 갖는 크기 9의 VARCHAR2형
+// DEPTNO FOREIGN KEY 값을 갖는 크기 2의 NUMBER형
+CREATE TABLE EMP02(
+    EMPNO NUMBER(4),
+    ENAME VARCHAR2(10) NOT NULL,
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2),
+    PRIMARY KEY(EMPNO),
+    UNIQUE(JOB),
+    FOREIGN KEY(DEPTNO) REFERENCES DEPT(DEPTNO)
+);
+
+// EMP03 테이블을 생성했습니다.
+// EMPNO PRIMARY KEY값을 갖는 크기 4의 NUMBER형 
+// 설정한 PRIMARY KEY 제약조건의 이름을 EMP03_ENAME_PK로 설정
+// ENAME NULL값을 가지지 못하는 크기 10의 VARCHAR2형 
+// 설정한 NOT NULL 제약조건의 이름을 EMP03_ENAME_NN으로 설정
+// JOB UNIQUE 값을 갖는 크기 9의 VARCHAR2형
+// 설정한 UNIQUE 제약조건의 이름을 EMP03_JOB_UK로 설정
+// DEPTNO FOREIGN KEY 값을 갖는 크기 2의 NUMBER형
+// 설정한 FOREIGN KEY 제약조건의 이름을 EMP03_DEPTNO_FK로 설정
+CREATE TABLE EMP03(
+    EMPNO NUMBER(4),
+    ENAME VARCHAR2(10) CONSTRAINT EMP03_ENAME_NN NOT NULL, 
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2),
+    CONSTRAINT EMP03_EMPNO_PK PRIMARY KEY(EMPNO),
+    CONSTRAINT EMP03_JOB_UK UNIQUE(JOB),
+    CONSTRAINT EMP03_DEPTNO_FK FOREIGN KEY(DEPTNO) REFERENCES DEPT(DEPTNO)  
+);
+
+// 사용자의 제약조건중에서
+// EMP03 테이블의 제약조건이름과 타입, 외래키의 경우 어떤 기본키를 참조했는지, 그리고 테이블이름을 출력합니다.
+// EMP03 테이블의 제약조건 PRIMARY KEY
+// EMP03 테이블의 제약조건 NOTNULL
+// EMP03 테이블의 제약조건 UNIQUE
+// EMP03 테이블의 제약조건 FOREGIN KEY
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP03’);
+
+// MEMBER01 테이블을 생성했습니다.
+// NAME 크기 10의 VARCHAR2형
+// ADDRESS 크기 30의 VARCHAR2형
+// HPHONE 크기16의 VARCHAR2형
+// NAME과 HPHONE의 컬럼을 묶어 기본키로 설정
+// 설정한 PRIMARY KEY제약조건의 이름을 MEMBER01_COMBO_PK로 설정
+CREATE TABLE MEMBER01(
+    NAME VARCHAR2(10),
+    ADDRESS VARCHAR2(30),
+    HPHONE VARCHAR2(16),
+    CONSTRAINT MEMBER01_COMBO_PK PRIMARY KEY(NAME, HPHONE)
+);
+
+// 사용자의 제약조건중에서
+// MEMBER01테이블의 제약조건이름과 타입, 외래키가 어떤 기본키를 참조하는지, 그리고 테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('MEMBER01’);
+
+// EMP01 테이블을 삭제했습니다.
+DROP TABLE EMP01;
+
+// EMP01 테이블을 생성했습니다.
+// EMPNO 크기 4의 NUMBER형
+// ENAME 크기 10의 VARCHAR2형
+// JOB 크기 9의 VARCHAR2형
+// DEPTNO 크기2의 NUMBER형
+CREATE TABLE EMP01(
+    EMPNO NUMBER(4),
+    ENAME VARCHAR2(10),
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2)
+);
+
+// 사용자의 제약조건중에서
+// EMP01테이블의 제약조건이름과 타입, 외래키인 경우 무슨 기본키를 참조하는지, 그리고 테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP01’);
+
+// EMP01 테이블의 EMPNO 속성이 PRIMARY KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 EMP01_EMPNO_PK로 설정했습니다.
+ALTER TABLE EMP01 ADD CONSTRAINT EMP01_EMPNO_PK PRIMARY KEY(EMPNO);
+
+// EMP01 테이블의 DEPTNO 속성이 FOREIGN KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 EMP01_DEPTNO_FK로 설정했습니다.
+ALTER TABLE EMP01 
+ADD CONSTRAINT EMP01_DEPTNO_FK FOREIGN KEY(DEPTNO) REFERENCES DEPT(DEPTNO);
+
+// 사용자의 제약조건중에서
+// EMP01 테이블의 제약조건이름과 타입, 외래키의 경우 무슨 기본키를 참조하는지, 그리고 테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP01’);
+
+// EMP01 테이블의 ENAME 속성을 NOT NULL을 갖도록 하고
+// 설정한 제약조건의 이름을 EMP01_ENAME_NN으로 설정했습니다.
+ALTER TABLE EMP01 MODIFY ENAME CONSTRAINT EMP01_ENAME_NN NOT NULL;
+
+// 사용자의 제약조건중에서
+// EMP05 테이블의 제약조건이름과 타입, 외래키의 경우 무슨 기본키를 참조하는지, 그리고테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP05’);
+
+// EMP05 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM EMP05;
+
+// DEPT 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM DEPT;
+
+// EMP 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM EMP;
+
+// DEPT01 테이블을 삭제했습니다.
+DROP TABLE DEPT01;
+
+// DEPT01 테이블을 생성했습니다.
+// DEPTNO PRIMARYKEY값을 갖는 크기 2의 NUMBER형
+// 설정한 제약조건의 이름을 DEPT01_DEPTNO_PK로 설정
+// DNAME 크기 14의 VARCHAR2형
+// LOC 크기 13의 VARCHAR2형
+CREATE TABLE DEPT01(
+    DEPTNO NUMBER(2) CONSTRAINT DEPT01_DEPTNO_PK PRIMARY KEY,
+    DNAME VARCHAR2(14),
+    LOC VARCHAR2(13)
+);
+
+// 사용자의 제약조건중에서
+// DEPT01 테이블의 제약조건이름과 타입, 외래키가 무슨 기본키를 참조하는지, 그리고 테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('DEPT01’);
+
+// DEPT01 테이블에 (10, '경리부', '서울')값을 삽입했습니다.
+INSERT INTO DEPT01 VALUES(10, '경리부', '서울’);
+
+// DEPT01 테이블에 (20, '인사부', '인천')값을 삽입했습니다.
+INSERT INTO DEPT01 VALUES(20, '인사부', '인천’);
+
+// DEPT01 테이블의 모든 레코드를 출력합니다.
+SELECT * FROM DEPT01;
+
+// 지금까지의 결과를 저장합니다.
+// autocommit 옵션을 체크하면 쿼리문을 수행할때마다 COMMIT을 해주지 않아도 자동으로 결과를 저장합니다.
+COMMIT;
+
+// EMP01 테이블을 삭제했습니다.
+DROP TABLE EMP01;
+
+// EMP01 테이블을 생성합니다.
+// EMPNO PRIMARY KEY 값을 가지는 크기 4의 NUMBER형
+// 설정한 제약조건의 이름을 EMP01_EMPNO_PK로 설정
+// ENAME 크기 10의 VARCHAR2형
+// JOB UNIQUE 값을 갖는 크기9의 VARCHAR2형
+// 설정한 제약조건의 이름을 EMP01_JOB_UK로 설정
+// DEPTNO FOREIGN KEY 값을 가지는 크기2의 NUMBER형
+// 설정한 제약조건의 이름을 EMP01_DEPTNO_FK로 설정
+CREATE TABLE EMP01(
+    EMPNO NUMBER(4),
+    ENAME VARCHAR2(10) CONSTRAINT EMP01_ENAME_NN  NOT NULL, 
+    JOB VARCHAR2(9),
+    DEPTNO NUMBER(2),
+    CONSTRAINT EMP01_EMPNO_PK PRIMARY KEY(EMPNO),
+    CONSTRAINT EMP01_JOB_UK UNIQUE(JOB),
+    CONSTRAINT EMP01_DEPTNO_FK FOREIGN KEY(DEPTNO) REFERENCES DEPT01(DEPTNO)  
+);
+
+// 사용자의 제약조건중에서
+// EMP01 테이블의 제약조건이름과 타입, 외래키의 경우 무슨 기본키를 참조하는지, 그리고 테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP01’);
+
+// DEPT01 테이블의 모든 레코드를 출력했습니다.
+SELECT * FROM DEPT01;
+
+// 사용자의 제약조건중에서
+// EMP01 테이블의 제약조건이름과 타입, 외래키가 무슨 기본키를 참조하는지, 그리고 테이블이름을 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, R_CONSTRAINT_NAME, TABLE_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP01’);
+
+// EMP01 테이블에 (1000, '허준', '사원', 10)값을 삽입했습니다.
+INSERT INTO EMP01 VALUES(1000, '허준', '사원', 10);
+
+// EMP01 테이블에 (1010, '홍길동', '사원', 50)값을 삽입했습니다.
+INSERT INTO EMP01 VALUES(1010, '홍길동', '사원', 50);
+
+// EMP01 테이블의 모든 레코드를 출력했습니다.
+SELECT * FROM EMP01;
+
+// DEPT01 테이블에서 DEPTNO컬럼의 값이 10인 레코드를 삭제합니다.
+DELETE FROM DEPT01 WHERE DEPTNO=10;
+
+// EMP01테이블의 EMP01_DEPTNO_FK 속성을 제거합니다.
+ALTER TABLE EMP01 DISABLE CONSTRAINT EMP01_DEPTNO_FK;
+
+// 사용자의 제약조건중에서
+// EMP01 테이블의 제약조건이름, 제약조건타입, 테이블이름,
+                     외래키의 경우 무슨 기본키를 참조하는지, 그리고 제약조건의 상태를 출력합니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME, STATUS 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMP01’);
+
+// DEPT01 테이블의 모든 레코드를 출력했습니다.
+SELECT * FROM DEPT01;
+
+// EMP01 테이블에서 DISABLED 시켰던 EMP01_DEPTNO_FK 제약조건의 상태를 ENABLE로 변경합니다.
+ALTER TABLE EMP01 ENABLE CONSTRAINT EMP01_DEPTNO_FK;
+
+// DEPT01 테이블에 (10, '경리부', '서울')값을 삽입했습니다.
+INSERT INTO DEPT01 VALUES(10, '경리부', '서울’);
+
+// TEST 테이블을 생성합니다.
+// ID DEFAULT값으로 1을 갖고 PRIMARY KEY 속성인 크기 4의 NUMBER형
+// NAME NULL 값을 가지지 못하는 UNIQUE속성인 크기 20의 VARCHAR2형
+CREATE TABLE TEST(
+    ID NUMBER(4) DEFAULT 1 PRIMARY KEY,
+    NAME VARCHAR2(20) NULL UNIQUE
+);
+
+// EMPLOYEE 테이블을 생성합니다.
+// EMP_NO 크기 4의 NUMBER형
+// EMP_NAME 크기 20의 VARCHAR2형
+// SALARY 크기 6의 NUMBER형
+// BIRTHDAY DATE형
+CREATE TABLE EMPLOYEE(
+    EMP_NO NUMBER(4),
+    EMP_NAME VARCHAR2(20),
+    SALARY NUMBER(6),
+    BIRTHDAY DATE
+);
+
+// PROJECT 테이블을 생성했습니다.
+// PRO_CONTENT 크기 100인 VARCHAR2형
+// START_DATE DATE형
+// FINISH_DATE DATE형
+
+CREATE TABLE PROJECT(
+    PRO_NO NUMBER(4),
+    PRO_CONTENT VARCHAR2(100),
+    START_DATE DATE,
+    FINISH_DATE DATE
+);
+
+// SPECIALTY 테이블 생성
+// EMP_NO 크기 4의 NUMBER형
+// SPECIALTY 크기 20의 VARCHAR2형
+CREATE TABLE SPECIALTY(
+    EMP_NO NUMBER(4),
+    SPECIALTY VARCHAR2(20)
+);
+
+// ASSIGN 테이블 생성
+// EMP_NO 크기 4의 NUMBER형
+// PRO_NO 크기 4의 NUMBER형
+CREATE TABLE ASSIGN(
+    EMP_NO NUMBER(4),
+    PRO_NO NUMBER(4)
+);
+
+// EMPLOYEE 테이블의 EMP_NO 속성이 PRIMARY KEY값을 갖도록 하고
+// 설정한 제약조건의 이름을 EMPLOYEE_PK로 설정했습니다.
+ALTER TABLE EMPLOYEE ADD CONSTRAINT EMPLOYEE_PK PRIMARY KEY(EMP_NO);
+
+// PROJECT 테이블의 PRO_NO 속성이 PRIMARY KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 PROJECT_PK로 설정했습니다.
+ALTER TABLE PROJECT ADD CONSTRAINT PROJECT_PK PRIMARY KEY(PRO_NO);
+
+// SPECIALTY 테이블의 EMP_NO 컬럼과 SPECIALTY 컬럼 두 개가 동시에 PRIMARY KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 SPECIALTY_PK로 설정했습니다.
+ALTER TABLE SPECIALTY 
+ADD CONSTRAINT SPECIALTY_PK PRIMARY KEY(EMP_NO, SPECIALTY);
+
+// ASSIGN 테이블의 EMP_NO 컬럼과 PRO_NO 컬럼 두 개가 동시에 PRIMARY KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 SPECIALTY_PK로 설정했습니다.             
+ALTER TABLE ASSIGN 
+ADD CONSTRAINT ASSIGN_PK PRIMARY KEY(EMP_NO, PRO_NO);
+
+// SPECIALTY 테이블에서 EMP_NO 컬럼이 FOREIGN KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 SPECIALTY_FK로 설정했습니다.
+ALTER TABLE SPECIALTY 
+ADD CONSTRAINT SPECIALTY_FK FOREIGN KEY(EMP_NO) REFERENCES EMPLOYEE(EMP_NO);
+
+// ASSIGN 테이블에서 PRO_NO 컬럼이 FOREIGN KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 ASSIGN_PROJECT_FK로 설정했습니다.
+ALTER TABLE ASSIGN 
+ADD CONSTRAINT ASSIGN_PROJECT_FK FOREIGN KEY(PRO_NO) REFERENCES PROJECT;
+
+// ASSIGN 테이블의 EMP_NO 컬럼이 FOREGIN KEY 값을 갖도록 하고
+// 설정한 제약조건의 이름을 ASSIGN_EMPLOYEE로 설정했습니다.
+ALTER TABLE ASSIGN 
+ADD CONSTRAINT ASSIGN_EMPLOYEE_FK FOREIGN KEY(EMP_NO) REFERENCES EMPLOYEE;
+
+// 사용자의 제약조건중에서
+// EMPLOYEE, PROJECT, SPECIALTY, ASSIGN 테이블의 
+// 제약조건이름, 제약조건타입, 테이블이름, 외래키인 경우 참조하는 기본키를 출력했습니다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME 
+FROM USER_CONSTRAINTS 
+WHERE TABLE_NAME IN('EMPLOYEE', 'PROJECT', 'SPECIALTY', 'ASSIGN’);
+// 끝 // 
